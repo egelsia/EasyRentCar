@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="carDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ADMIN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERNAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PASSWORD" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="PASSWORDSALT" Type="varchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CAR">
+          <Key>
+            <PropertyRef Name="CAR_ID" />
+          </Key>
+          <Property Name="CAR_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CAR_BRAND" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CAR_MODEL" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CAR_IMG" Type="varbinary(max)" />
+          <Property Name="CAR_PRICE" Type="int" Nullable="false" />
+          <Property Name="CAR_SEATS" Type="smallint" />
+          <Property Name="CAR_TRANSMISSION" Type="bit" />
+          <Property Name="CAR_FUEL" Type="nvarchar" MaxLength="50" />
+          <Property Name="CAR_DOORS" Type="smallint" />
+          <Property Name="CAR_AVAILABLE" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="carDBModelStoreContainer">
+          <EntitySet Name="ADMIN" EntityType="Self.ADMIN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CAR" EntityType="Self.CAR" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="carDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ADMIN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PASSWORDSALT" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CAR">
+          <Key>
+            <PropertyRef Name="CAR_ID" />
+          </Key>
+          <Property Name="CAR_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CAR_BRAND" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CAR_MODEL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CAR_IMG" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="CAR_PRICE" Type="Int32" Nullable="false" />
+          <Property Name="CAR_SEATS" Type="Int16" />
+          <Property Name="CAR_TRANSMISSION" Type="Boolean" />
+          <Property Name="CAR_FUEL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CAR_DOORS" Type="Int16" />
+          <Property Name="CAR_AVAILABLE" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="carDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADMINs" EntityType="Self.ADMIN" />
+          <EntitySet Name="CARs" EntityType="Self.CAR" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="carDBModelStoreContainer" CdmEntityContainer="carDBEntities">
+          <EntitySetMapping Name="ADMINs">
+            <EntityTypeMapping TypeName="carDBModel.ADMIN">
+              <MappingFragment StoreEntitySet="ADMIN">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="PASSWORDSALT" ColumnName="PASSWORDSALT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CARs">
+            <EntityTypeMapping TypeName="carDBModel.CAR">
+              <MappingFragment StoreEntitySet="CAR">
+                <ScalarProperty Name="CAR_ID" ColumnName="CAR_ID" />
+                <ScalarProperty Name="CAR_BRAND" ColumnName="CAR_BRAND" />
+                <ScalarProperty Name="CAR_MODEL" ColumnName="CAR_MODEL" />
+                <ScalarProperty Name="CAR_IMG" ColumnName="CAR_IMG" />
+                <ScalarProperty Name="CAR_PRICE" ColumnName="CAR_PRICE" />
+                <ScalarProperty Name="CAR_SEATS" ColumnName="CAR_SEATS" />
+                <ScalarProperty Name="CAR_TRANSMISSION" ColumnName="CAR_TRANSMISSION" />
+                <ScalarProperty Name="CAR_FUEL" ColumnName="CAR_FUEL" />
+                <ScalarProperty Name="CAR_DOORS" ColumnName="CAR_DOORS" />
+                <ScalarProperty Name="CAR_AVAILABLE" ColumnName="CAR_AVAILABLE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

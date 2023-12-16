@@ -1,0 +1,17 @@
+﻿<div class="container-fluid fixed-top" style="background-color: #8f8f8f">
+    <div class="container px-0">
+        <nav class="navbar navbar-light navbar-expand-xl">
+            <a href="/Home" class="navbar-brand"><h1 class="text-primary display-6">Easy Rent Car</h1></a>
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="fa fa-bars text-primary"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav mx-auto">
+                    <a href="/Home" class="nav-item nav-link customize-nav @((ViewContext.HttpContext.Request.Path == ("/")) || (ViewContext.HttpContext.Request.Path == ("/Home")) || (ViewContext.HttpContext.Request.Path == ("")) ? "active" : "")">Home</a>
+                    <a href="/Car/Index" class="nav-item nav-link customize-nav @((ViewContext.HttpContext.Request.Path.Contains("Car")) ? "active" : "") ">Cars</a>
+                    <a href="/Home/Contact" class="nav-item nav-link customize-nav @(ViewContext.HttpContext.Request.Path == "/Home/Contact" ? "active" : "")">Contact</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

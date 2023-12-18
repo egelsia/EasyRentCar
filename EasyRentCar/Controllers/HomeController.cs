@@ -14,7 +14,10 @@ namespace EasyRentCar.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            return View();
+            var carList = db.CARs.ToList();
+            Random random = new Random();
+            var model = carList.OrderBy(x => random.Next()).Take(4).ToList();
+            return View(model);
         }
 
         public ActionResult Contact()

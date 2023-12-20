@@ -17,5 +17,20 @@ namespace EasyRentCar.Controllers
             var model = carList.OrderBy(m => m.CAR_ID).ToList();
             return View(model);
         }
+
+        public ActionResult Details(int id)
+        {
+            var car = db.CARs.Find(id);
+
+            return View(car);
+        }
+
+        public ActionResult Create()
+        {
+            return View("CarForm");
+        }
+
+ 
+       
     }
 }

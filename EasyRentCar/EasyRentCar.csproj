@@ -177,6 +177,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Car\Index.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Car\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

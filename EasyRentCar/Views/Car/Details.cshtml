@@ -1,0 +1,84 @@
+﻿@using EasyRentCar.Models.EntityFramework
+@model EasyRentCar.Models.EntityFramework.CAR
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.CAR_BRAND @Model.CAR_MODEL</h3>
+
+<div class="container py-5 rounded" style="background-color: #F4F6F8">
+
+    <div class="row g-4 mb-5" style="padding-top: 40px">
+        <div class="col-lg-12 col-xl-12" style="padding: 0px 3% 0px 3%">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="border rounded">
+                        <a href="#">
+                            <img src="@Url.Action("DisplayImage", "Car", new { id = Model.CAR_ID })" class="img-fluid rounded bg-white" alt="Image">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h4 class="fw-bold mb-3">@Model.CAR_BRAND @Model.CAR_MODEL</h4>
+                    <h5 class="fw-bold mb-3">$@Model.CAR_PRICE</h5>
+
+                    <div class="tab-content mb-5">
+                        <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                            <div class="px-2">
+                                <div class="row g-4">
+                                    <div class="col-6">
+                                        <div class="row bg-white align-items-center justify-content-center py-2">
+                                            <div class="col-6">
+                                                <p class="mb-0">Seats</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-0">@Model.CAR_SEATS</p>
+                                            </div>
+                                        </div>
+                                        <div class="row align-items-center justify-content-center py-2">
+                                            <div class="col-6">
+                                                <p class="mb-0">Transmission</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-0">@(Model.CAR_TRANSMISSION == true ? "Automatic" : "Manual") </p>
+                                            </div>
+                                        </div>
+                                        <div class="row bg-white align-items-center justify-content-center py-2">
+                                            <div class="col-6">
+                                                <p class="mb-0">Doors</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-0">@Model.CAR_DOORS</p>
+                                            </div>
+                                        </div>
+                                        <div class="row  align-items-center justify-content-center py-2">
+                                            <div class="col-6">
+                                                <p class="mb-0">Fuel Type</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-0">@Model.CAR_FUEL</p>
+                                            </div>
+                                        </div>
+                                        <div class="row bg-white align-items-center justify-content-center py-2">
+                                            <div class="col-6">
+                                                <p class="mb-0">Availability Status</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="mb-0">@(Model.CAR_AVAILABLE == true ? "Available" : "Unavailable")</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,116 @@
+﻿@using EasyRentCar.Models.EntityFramework
+@model List<CAR>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2 class="invisible">Car Index</h2>
+<div class="container-fluid fruite">
+    <div class="container py-5">
+        <div class="p-5 bg-light rounded" style="padding-top : 20px">
+            <div class="text-center mx-auto" style="max-width: 700px;">
+                <h1 class="text-primary">Our Cars</h1>
+                <p class="mb-4">Browse our cars.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            @using (Html.BeginForm("FilterCars", "Car", FormMethod.Get))
+                            {
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="brand" class="form-label">Brand</label>
+                                        <input type="text" class="form-control" name="brand" />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="model" class="form-label">Model</label>
+                                        <input type="text" class="form-control" name="model" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label for="minPrice" class="form-label">Min Price</label>
+                                        <input type="number" class="form-control" name="minPrice" />
+                                    </div>
+
+                                    <div class="form-group col">
+                                        <label for="maxPrice" class="form-label">Max Price</label>
+                                        <input type="number" class="form-control" name="maxPrice" />
+                                    </div>
+
+                                    <div class="form-group col">
+                                        <label for="seats" class="form-label">Seats</label>
+                                        <input type="number" class="form-control" name="seats" />
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col">
+                                        <label for="transmissionType">Transmission</label>
+                                        <select class="form-control bg-white" name="transmissionType">
+                                            <option value="">All Transmissions</option>
+                                            <option value="false">Manual</option>
+                                            <option value="true">Automatic</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col">
+                                        <label for="fuelType">Fuel</label>
+                                        <select class="form-control bg-white" name="fuelType">
+                                            <option value="" class="form-control">All Types</option>
+                                            <option value="Gasoline">Gasoline</option>
+                                            <option value="Motorin">Motorin</option>
+                                            <option value="Electric">Electric</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary rounded" style="margin-top:10px; color: #fff">Filter</button>
+                            }
+
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row g-4 text-center">
+                                @foreach (var car in Model)
+                                {
+                                    <div class="col-md-6 col-lg-4 col-xl-4">
+                                        <a href="@Url.Action("Details", "Car", new { id = car.CAR_ID })" style="display:flex; justify-content: space-between">
+                                            <div class="rounded position-relative fruite-item" style="background-color: #fff">
+
+                                                <div class="fruite-img">
+                                                    <img src=@Url.Action("DisplayImage", "Car", new { id = car.CAR_ID }) class="img-fluid w-100 rounded-top" alt="">
+                                                </div>
+                                                <div class="text-white bg-secondary px-1 rounded position-absolute" style="top: 10px; left: 10px;">@(car.CAR_TRANSMISSION == true ? "Automatic" : "Manual")</div>
+                                                <div class="text-white bg-primary px-1 rounded position-absolute" style="top: 10px; right: 10px;">@car.CAR_FUEL</div>
+                                                <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                                                    <h5 class="fw-bold">@car.CAR_BRAND</h5>
+                                                    <p>@car.CAR_MODEL</p>
+                                                    <div class="justify-content flex-lg-wrap" style="text-align:center">
+                                                        <p class="text-dark fs-5 fw-bold" style="text-align:center">$@car.CAR_PRICE</p>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </a>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <div class="justify-content flex-lg-wrap">
+                                                <a href="@Url.Action("Delete", "Car", new { id = car.CAR_ID })"><img src="~/Content/removeicon.svg" alt="Delete Car" width="20" height="20" /></a>
+                                                <a href="@Url.Action("Edit", "Car", new { id = car.CAR_ID })" style="margin-left:5px"><img src="~/Content/editicon.svg" alt="Edit Car" width="20" height="20" /></a>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

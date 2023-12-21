@@ -1,0 +1,78 @@
+﻿@model EasyRentCar.Models.EntityFramework.CAR
+@{
+    ViewBag.Title = "CarForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="background-color: #F4F6F8; padding-top : 100px ">
+    <h2 style="padding-top : 3%; text-align: center">Car Form</h2>
+    @using (Html.BeginForm("Save", "Car", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <!-- 2 column grid layout with text inputs for the first and last names -->
+            <!-- Text input -->
+            <div class="form-group">
+                @Html.LabelFor(m => m.CAR_BRAND, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.CAR_BRAND, new { @class = "form-control" })
+            </div>
+
+            <!-- Text input -->
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.CAR_MODEL, new { @class = "form-label" })
+                @Html.TextBoxFor(m => m.CAR_MODEL, new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-3 col-md-4 col-sm-6">
+                    @Html.LabelFor(m => m.CAR_PRICE)
+                    @Html.TextBoxFor(m => m.CAR_PRICE, new { @class = "form-control", type = "number", data_val = "true", data_val_number = "Please enter a valid number." })
+                </div>
+
+                <div class="form-group col-lg-3 col-md-4 col-sm-6">
+                    @Html.LabelFor(m => m.CAR_DOORS)
+                    @Html.TextBoxFor(m => m.CAR_DOORS, new { @class = "form-control", type = "number", data_val = "true", data_val_number = "Please enter a valid number." })
+                </div>
+
+                <div class="form-group col-lg-3 col-md-4 col-sm-6">
+                    @Html.LabelFor(m => m.CAR_SEATS)
+                    @Html.TextBoxFor(m => m.CAR_SEATS, new { @class = "form-control", type = "number", data_val = "true", data_val_number = "Please enter a valid number." })
+                </div>
+
+                <div class="form-group col-lg-3 col-md-4 col-sm-6">
+                    @Html.LabelFor(m => m.CAR_FUEL)
+                    @Html.DropDownListFor(m => m.CAR_FUEL, new SelectList(new List<String> { "Gasoline", "Motorin", "Electric" }), new { @class = "form-control", @style = "background-color : #FFFFFF" })
+                </div>
+
+                <div class="form-group form-group col-lg-3 col-md-6 col-sm-12">
+                    @Html.LabelFor(m => m.CAR_IMG, new { @class = "form-label" })
+                    <input type="file" name="file" id="file" class="form-control" />
+                </div>
+            </div>
+
+            <div class="radio-inline">
+                @Html.LabelFor(m => m.CAR_TRANSMISSION, new { @class = "form-label" })
+                <br />
+                <label>
+                    @Html.RadioButtonFor(m => m.CAR_TRANSMISSION, true, new { @class = "form" }) Automatic
+                </label>
+                <label>
+                    @Html.RadioButtonFor(m => m.CAR_TRANSMISSION, false) Manual
+                </label>
+            </div>
+            <br />
+            <div class="checkbox">
+                @Html.LabelFor(m => m.CAR_AVAILABLE)
+                <br />
+                @Html.CheckBoxFor(m => m.CAR_AVAILABLE) Available
+            </div>
+            <br />
+
+            @Html.HiddenFor(m => m.CAR_ID)
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-success btn-block mb-4">Save</button>
+        </div>
+    }
+
+</div>
+

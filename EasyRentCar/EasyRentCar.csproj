@@ -181,6 +181,7 @@
     <Content Include="Views\Car\Details.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
     <Content Include="Views\Security\Register.cshtml" />
+    <Content Include="Views\Car\CarForm.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

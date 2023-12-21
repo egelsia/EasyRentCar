@@ -1,0 +1,47 @@
+﻿@model ERCworkcsharp.Models.EntityFramework.ADMIN
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body style="background-color: #F4F6F8;">
+
+    @using (Html.BeginForm("Register", "Security", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <h2 class="text-center mt-5">Admin Login</h2>
+                    <div class="card my-5">
+                        <div class="card-body">
+
+                            <form>
+                                <div class="mb-3">
+                                    @Html.LabelFor(m => m.USERNAME, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.USERNAME, new { @class = "form-control" })
+                                </div>
+                                <div class="mb-3">
+                                    @Html.LabelFor(m => m.PASSWORD, new { @class = "form-label" })
+                                    @Html.PasswordFor(m => m.PASSWORD, new { @class = "form-control" })
+                                </div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+
+</html>
+
+

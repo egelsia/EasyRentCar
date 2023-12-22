@@ -176,12 +176,12 @@
     <Content Include="Views\Shared\_Footer.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Car\Index.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
-    <Content Include="Views\Car\Details.cshtml" />
     <Content Include="Views\Security\Login.cshtml" />
     <Content Include="Views\Security\Register.cshtml" />
+    <Content Include="Views\Car\Index.cshtml" />
     <Content Include="Views\Car\CarForm.cshtml" />
+    <Content Include="Views\Car\Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

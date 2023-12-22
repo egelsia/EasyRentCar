@@ -87,17 +87,42 @@ namespace EasyRentCar.Controllers
             return RedirectToAction("Index", "Car");
         }
 
-        public ActionResult DisplayImage(int id)
+        public ActionResult FilterCars(string brand, string model, int? minPrice, int? maxPrice, int? seats, string fuelType, bool? transmissionType)
         {
-            var model = db.CARs.Find(id);
+            IQueryable<CAR> query = db.CARs;
 
-            if (model.CAR_IMG != null)
+            if (!string.IsNullOrEmpty(brand))
             {
-                return File(model.CAR_IMG, "image/png"); // You can adjust the content type based on your image types
+                query = query.Where(c => c.CAR_BRAND.ToLower().Contains(brand.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(model))
+            {
+                query = query.Where(c => c.CAR_MODEL.ToLower().Contains(model.ToLower()));
+            }
+            if (minPrice.HasValue)
+            {
+                query = query.Where(c => c.CAR_PRICE >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(c => c.CAR_PRICE <= maxPrice.Value);
+            }
+            if (seats.HasValue)
+            {
+                query = query.Where(c => c.CAR_SEATS == seats.Value);
+            }
+            if (transmissionType != null)
+            {
+                query = query.Where(c => c.CAR_TRANSMISSION == transmissionType);
+            }
+            if (!string.IsNullOrEmpty(fuelType))
+            {
+                query = query.Where(c => c.CAR_FUEL == fuelType);
             }
 
-            // Handle error case or show a default image
-            return File("~/Content/img-not-available.jpg", "image/jpeg");
+            List<CAR> carList = query.ToList();
+
+            return View("Index", carList);
         }
 
     }

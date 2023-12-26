@@ -131,5 +131,18 @@ namespace EasyRentCar.Controllers
             return View("Index", carList);
         }
 
+
+        public ActionResult DisplayImage(int id)
+        {
+            var model = db.CARs.Find(id);
+
+            if (model.CAR_IMG != null)
+            {
+                return File(model.CAR_IMG, "image/png");
+            }
+
+            return File("~/Content/img-not-available.jpg", "image/jpeg");
+        }
+
     }
 }

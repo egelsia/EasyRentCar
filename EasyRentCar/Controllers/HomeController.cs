@@ -16,7 +16,7 @@ namespace EasyRentCar.Controllers
         {
             var carList = db.CARs.ToList();
             Random random = new Random();
-            var model = carList.OrderBy(x => random.Next()).Take(4).ToList();
+            var model = carList.Where(m => m.CAR_AVAILABLE == true).OrderBy(x => random.Next()).Take(4).ToList();
             return View(model);
         }
 

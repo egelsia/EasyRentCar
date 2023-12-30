@@ -15,8 +15,18 @@ namespace EasyRentCar.Controllers
         public ActionResult Index()
         {
             var carList = db.CARs.ToList();
-            var model = carList.OrderBy(m => m.CAR_ID).ToList();
-            return View(model);
+            
+            if (User.Identity.IsAuthenticated)
+            {
+                var model = carList.OrderBy(m => m.CAR_ID).ToList();
+                return View(model);
+            }
+            else
+            {
+                var model = carList.Where(m => m.CAR_AVAILABLE == true).OrderBy(m => m.CAR_ID).ToList();
+                return View(model);
+            }
+            
         }
 
         [HttpPost]
@@ -95,7 +105,16 @@ namespace EasyRentCar.Controllers
 
         public ActionResult FilterCars(string brand, string model, int? minPrice, int? maxPrice, int? seats, string fuelType, bool? transmissionType)
         {
-            IQueryable<CAR> query = db.CARs;
+            IQueryable<CAR> query;
+            if (User.Identity.IsAuthenticated)
+            {
+                query = db.CARs;
+            }
+            else
+            {
+                query = db.CARs.Where(m => m.CAR_AVAILABLE == true);
+            }
+            
 
             if (!string.IsNullOrEmpty(brand))
             {

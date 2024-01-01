@@ -10,7 +10,7 @@ namespace EasyRentCar.Controllers
     public class HomeController : Controller
     {
         
-        carDBEntities db = new carDBEntities();
+        internal carDBEntities db = new carDBEntities();
         // GET: Home
         public ActionResult Index()
         {

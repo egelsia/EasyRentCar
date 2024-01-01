@@ -10,6 +10,8 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Data.Entity.Migrations;
+using System.IO;
 
 namespace EasyRentCar.Tests.Controllers
 {
@@ -160,7 +162,15 @@ namespace EasyRentCar.Tests.Controllers
         public void Save_Create_ValidCar_RedirectsToIndex()
         {
             var mockDbContext = new Mock<carDBEntities>();
-            
+            var mockSet = new Mock<DbSet<CAR>>();
+
+            // Setup the DbSet
+            mockDbContext.Setup(m => m.CARs).Returns(mockSet.Object);
+
+            // Setup for Add method if Save uses it to add a new car
+            mockSet.Setup(m => m.Add(It.IsAny<CAR>())).Returns((CAR c) => c);
+
+            _controller = new CarController();
             _controller.db = mockDbContext.Object;
 
             var carToCreate = new CAR
@@ -175,36 +185,81 @@ namespace EasyRentCar.Tests.Controllers
                 CAR_DOORS = 4
             };
 
+            // If Save method calls SaveChanges on the DbContext
+            mockDbContext.Setup(m => m.SaveChanges()).Verifiable();
+
+            // Act
             var result = _controller.Save(carToCreate, null) as RedirectToRouteResult;
 
+            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.RouteValues["action"]);
+            mockDbContext.Verify(m => m.SaveChanges(), Times.Once); // Verify that SaveChanges was called
         }
 
         [TestMethod]
         public void Save_Update_ValidCar_RedirectsToIndex()
         {
             var mockDbContext = new Mock<carDBEntities>();
-
-            _controller.db = mockDbContext.Object;
+            var mockSet = new Mock<DbSet<CAR>>();
 
             var carToUpdate = new CAR
             {
-                CAR_ID = 1,
+                CAR_ID = 2,
                 CAR_BRAND = "UpdatedBrand",
                 CAR_MODEL = "UpdatedModel",
-                CAR_PRICE = 200,
-                CAR_SEATS = 6,
-                CAR_TRANSMISSION = false,
-                CAR_FUEL = "Electric",
-                CAR_DOORS = 2
+                // Other properties as needed
             };
 
-            var result = _controller.Save(carToUpdate, null) as RedirectToRouteResult;
+            // Setup the DbSet and its methods
+            mockDbContext.Setup(m => m.CARs).Returns(mockSet.Object);
+            mockSet.Setup(m => m.Find(carToUpdate.CAR_ID)).Returns(carToUpdate);
 
+            _controller = new CarController();
+            _controller.db = mockDbContext.Object;
+
+            // Mocking HttpPostedFileBase if needed for file upload test
+            var mockFile = new Mock<HttpPostedFileBase>();
+            mockFile.Setup(f => f.ContentLength).Returns(1);
+            mockFile.Setup(f => f.InputStream).Returns(new MemoryStream(new byte[1]));
+
+            // If Save method calls SaveChanges on the DbContext
+            mockDbContext.Setup(m => m.SaveChanges()).Verifiable();
+
+            // Act
+            var result = _controller.Save(carToUpdate, mockFile.Object) as RedirectToRouteResult;
+
+            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.RouteValues["action"]);
+            mockDbContext.Verify(m => m.SaveChanges(), Times.Once); // Verify that SaveChanges was called
         }
+
+        [TestMethod]
+        public void Edit_ReturnsCarFormWithModel()
+        {
+            var mockDbContext = new Mock<carDBEntities>();
+            var mockSet = new Mock<DbSet<CAR>>();
+
+            var carId = 1;
+            var car = new CAR { CAR_ID = carId, CAR_BRAND = "Brand", /* Other properties */ };
+
+            mockDbContext.Setup(m => m.CARs).Returns(mockSet.Object);
+            mockSet.Setup(m => m.Find(carId)).Returns(car);
+
+            _controller = new CarController();
+            _controller.db = mockDbContext.Object;
+
+            // Act
+            var result = _controller.Edit(carId) as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("CarForm", result.ViewName);
+            Assert.AreEqual(car, result.Model);
+        }
+
+
 
         [TestMethod]
         public void Delete_ValidCar_RedirectsToIndex()
@@ -231,6 +286,187 @@ namespace EasyRentCar.Tests.Controllers
 
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.RouteValues["action"]);
+        }
+
+        [TestMethod]
+        public void FilterCars_WithBrandFilter_ReturnsFilteredCars()
+        {
+            // Arrange
+            var mockDbContext = new Mock<carDBEntities>();
+            var controller = new CarController();
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = HttpContextMock.CreateMockHttpContext(true) // Simulate an authenticated user
+            };
+            controller.db = mockDbContext.Object;
+
+            var cars = new List<CAR>
+            {
+                new CAR { CAR_BRAND = "Toyota" },
+                new CAR { CAR_BRAND = "Honda" },
+                new CAR { CAR_BRAND = "Ford" }
+            };
+
+            var mockSet = CreateDbSetMock(cars);
+
+            mockDbContext.Setup(db => db.CARs).Returns(mockSet.Object);
+
+            // Act
+            var result = controller.FilterCars("Toyota", null, null, null, null, null, null) as ViewResult;
+            var model = result.Model as List<CAR>;
+
+            // Assert
+            Assert.IsNotNull(model);
+            Assert.AreEqual(1, model.Count);
+            Assert.AreEqual("Toyota", model[0].CAR_BRAND);
+        }
+
+        [TestMethod]
+        public void FilterCars_WithNoFilters_ReturnsAllCars()
+        {
+            // Arrange
+            var mockDbContext = new Mock<carDBEntities>();
+            var controller = new CarController();
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = HttpContextMock.CreateMockHttpContext(true) // Simulate an authenticated user
+            };
+            controller.db = mockDbContext.Object;
+
+            var cars = new List<CAR>
+            {
+                new CAR { CAR_BRAND = "Toyota" },
+                new CAR { CAR_BRAND = "Honda" },
+                new CAR { CAR_BRAND = "Ford" }
+            };
+
+            var mockSet = CreateDbSetMock(cars);
+            mockDbContext.Setup(db => db.CARs).Returns(mockSet.Object);
+
+            // Act
+            var result = controller.FilterCars(null, null, null, null, null, null, null) as ViewResult;
+            var model = result.Model as List<CAR>;
+
+            // Assert
+            Assert.IsNotNull(model);
+            Assert.AreEqual(3, model.Count);
+        }
+
+        [TestMethod]
+        public void FilterCars_UserNotAuthenticated_ReturnsAvailableCars()
+        {
+            // Arrange
+            var mockDbContext = new Mock<carDBEntities>();
+            var controller = new CarController();
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = HttpContextMock.CreateMockHttpContext(false) // Simulate an unauthenticated user
+            };
+            controller.db = mockDbContext.Object;
+
+            var cars = new List<CAR>
+            {
+                new CAR { CAR_BRAND = "Toyota", CAR_AVAILABLE = true },
+                new CAR { CAR_BRAND = "Honda", CAR_AVAILABLE = false },
+                new CAR { CAR_BRAND = "Ford", CAR_AVAILABLE = true }
+            };
+
+            var mockSet = CreateDbSetMock(cars);
+            mockDbContext.Setup(db => db.CARs).Returns(mockSet.Object);
+
+            // Act
+            var result = controller.FilterCars(null, null, null, null, null, null, null) as ViewResult;
+            var model = result.Model as List<CAR>;
+
+            // Assert
+            Assert.IsNotNull(model);
+            Assert.AreEqual(2, model.Count);
+            Assert.IsTrue(model.All(c => c.CAR_AVAILABLE));
+        }
+
+        private static Mock<DbSet<T>> CreateDbSetMock<T>(List<T> elements) where T : class
+        {
+            var elementsAsQueryable = elements.AsQueryable();
+            var dbSetMock = new Mock<DbSet<T>>();
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.Provider).Returns(elementsAsQueryable.Provider);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.Expression).Returns(elementsAsQueryable.Expression);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(elementsAsQueryable.ElementType);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(elementsAsQueryable.GetEnumerator());
+            return dbSetMock;
+        }
+    }
+
+    [TestClass]
+    public class ErrorControllerTests
+    {
+        [TestMethod]
+        public void NotFound_ReturnsView()
+        {
+            // Arrange
+            var controller = new ErrorController();
+
+            // Act
+            var result = controller.NotFound() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+    }
+
+    [TestClass]
+    public class HomeControllerTests
+    {
+        private HomeController _controller;
+
+        [TestMethod]
+        public void Index_ReturnsViewWithModel()
+        {
+            // Arrange
+            var mockDbContext = new Mock<carDBEntities>();
+
+            // Ensure all necessary properties and dependencies of HomeController are initialized
+            _controller = new HomeController();
+            _controller.db = mockDbContext.Object;
+
+            var cars = new List<CAR>
+            {
+                new CAR { CAR_BRAND = "Toyota" },
+                new CAR { CAR_BRAND = "Honda" },
+                new CAR { CAR_BRAND = "Ford" }
+            };
+
+            var mockSet = CreateDbSetMock(cars);
+            mockDbContext.Setup(db => db.CARs).Returns(mockSet.Object);
+
+            // Act
+            var result = _controller.Index();
+
+            // Assert
+            Assert.IsNotNull(result, "Result is null");
+            Assert.IsInstanceOfType(result, typeof(ViewResult), "Result is not a ViewResult");
+
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult.Model, "Model is null");
+        }
+
+        private static Mock<DbSet<T>> CreateDbSetMock<T>(List<T> elements) where T : class
+        {
+            var elementsAsQueryable = elements.AsQueryable();
+            var dbSetMock = new Mock<DbSet<T>>();
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.Provider).Returns(elementsAsQueryable.Provider);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.Expression).Returns(elementsAsQueryable.Expression);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(elementsAsQueryable.ElementType);
+            dbSetMock.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(elementsAsQueryable.GetEnumerator());
+            return dbSetMock;
+        }
+
+        [TestMethod]
+        public void Contact_ReturnsView() {
+        
+            var result = _controller.Contact() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
         }
     }
 }

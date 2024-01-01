@@ -11,10 +11,11 @@ namespace EasyRentCar.Controllers
 {
     public class SecurityController : Controller
     {
-        carDBEntities db = new carDBEntities();
+        internal carDBEntities db = new carDBEntities();
         // GET: Security
         public ActionResult Login()
         {
+            
             return View();
         }
 
@@ -76,7 +77,7 @@ namespace EasyRentCar.Controllers
             return RedirectToAction("Login");
         }
 
-        private string GenerateSalt()
+        internal string GenerateSalt()
         {
             byte[] saltBytes = new byte[16]; // 16 bytes (128 bits) for salt
             using (var rng = new RNGCryptoServiceProvider())
@@ -87,7 +88,7 @@ namespace EasyRentCar.Controllers
         }
 
 
-        private string HashPassword(string password, string salt)
+        internal string HashPassword(string password, string salt)
         {
             byte[] saltBytes = System.Text.Encoding.UTF8.GetBytes(salt);
             var pbkdf2 = new Rfc2898DeriveBytes(password, saltBytes, 10000, System.Security.Cryptography.HashAlgorithmName.SHA256);

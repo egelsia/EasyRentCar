@@ -117,7 +117,6 @@ namespace EasyRentCar.Controllers
             {
                 query = db.CARs.Where(m => m.CAR_AVAILABLE == true);
             }
-            
 
             if (!string.IsNullOrEmpty(brand))
             {
@@ -164,6 +163,5 @@ namespace EasyRentCar.Controllers
 
             return File("~/Content/img-not-available.jpg", "image/jpeg");
         }
-
     }
 }

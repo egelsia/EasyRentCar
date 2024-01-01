@@ -78,7 +78,7 @@
                                 @foreach (var car in Model)
                                 {
                                     <div class="col-md-6 col-lg-4 col-xl-4">
-                                        <a href="@Url.Action("Details", "Car", new { id = car.CAR_ID })" style="display:flex; justify-content: space-between">
+                                        <a href="@Url.Action("Details", "Car", new { id = car.CAR_ID, numDays = 1 })" style="display:flex; justify-content: space-between">
                                             <div class="rounded position-relative fruite-item" style="background-color: #fff">
 
                                                 <div class="fruite-img">

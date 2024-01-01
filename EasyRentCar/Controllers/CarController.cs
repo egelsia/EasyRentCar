@@ -10,7 +10,8 @@ namespace EasyRentCar.Controllers
 {
     public class CarController : Controller
     {
-        carDBEntities db = new carDBEntities();
+        internal carDBEntities db = new carDBEntities();
+
         // GET: Car
         public ActionResult Index()
         {
@@ -36,9 +37,11 @@ namespace EasyRentCar.Controllers
         }
 
         // GET: Car/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, int numDays)
         {
             var car = db.CARs.Find(id);
+            decimal totalPrice = car.CAR_PRICE * numDays;
+            ViewBag.TotalPrice = totalPrice;
 
             return View(car);
         }
@@ -149,7 +152,6 @@ namespace EasyRentCar.Controllers
 
             return View("Index", carList);
         }
-
 
         public ActionResult DisplayImage(int id)
         {

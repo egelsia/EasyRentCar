@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-lg-6">
                     <h4 class="fw-bold mb-3">@Model.CAR_BRAND @Model.CAR_MODEL</h4>
-                    <h5 class="fw-bold mb-3">$@Model.CAR_PRICE</h5>
+                    <h5 class="fw-bold mb-3">$@Model.CAR_PRICE / day</h5>
 
                     <div class="tab-content mb-5">
                         <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
@@ -69,6 +69,34 @@
                                                 <p class="mb-0">@(Model.CAR_AVAILABLE == true ? "Available" : "Unavailable")</p>
                                             </div>
                                         </div>
+                                        <p></p>
+                                        <script>
+                                            function calculate() {
+                                                var inputValue = parseFloat(document.getElementById("days").value);
+                                                var databaseValue = @Model.CAR_PRICE;
+                                                var result = inputValue * databaseValue;
+                                                document.getElementById("result").innerHTML() = result;
+                                            }
+                                        </script>
+                                        <p>Calculate Price</p>
+
+                                        @using (Html.BeginForm("Details", "Car", FormMethod.Get))
+                                        {
+                                            @Html.HiddenFor(m => m.CAR_ID)
+                                            <div class="form-group col">
+                                                <label for="numDays" class="form-label">Number of Days</label>
+                                                <input type="number" class="form-control" name="numDays" />
+                                            </div>
+                                            <button type="submit" class="btn btn-success btn-block mb-4">Calculate</button>
+                                        }
+
+                                        @if (ViewBag.TotalPrice != null)
+                                        {
+                                            <p>Total Price: @ViewBag.TotalPrice</p>
+                                        }
+
+
+
                                     </div>
                                 </div>
                             </div>
